@@ -2,41 +2,51 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title translate="no">MSLRS App</title>
-    <link rel="icon" href="../assets/img/titlelogo.png" type="image/x-icon" />
+    <title translate="no">MSLRS | App</title>
+    <script src="./eel.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/ml2en.js"></script>
+    <script src="/sql-wasm.js"></script>
+
+    <link rel="icon" href="assets/img/titlelogo.png" type="image/x-icon" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://vjs.zencdn.net/5-unsafe/video-js.css"
+    />
     <link rel="stylesheet" href="./app.css" />
-    <script type="text/javascript" src="/eel.js"></script>
-    <script type="text/javascript" src="/ml2en.js"></script>
-    <script src='/sql-wasm.js'></script>
+
     <script type="text/javascript">
+      // eel.waitForStart()
       // stores previous gesture label
-      var pre = ''
+      var pre = "";
       // contains entire string in the form of array of words/strings
-      var str = []
+      var str = [];
       // current word
-      var word = ''
+      var word = "";
       // variable to check if dictionary DB has been fetched
-      var dbLoaded = false
+      var dbLoaded = false;
       // variable to store DB
       var db;
 
       // function to asynchronously fetch DB
-      async function loadDB(){
-        try{
-          const buf = await fetch("http://localhost:8000/dictionary.sqlite").then(res => res.arrayBuffer());
-          dbLoaded = true
-          initSqlJs().then(function(SQL){
+      async function loadDB() {
+        try {
+          const buf = await fetch(
+            "http://localhost:8000/dictionary.sqlite"
+          ).then((res) => res.arrayBuffer());
+          dbLoaded = true;
+          initSqlJs().then(function (SQL) {
             db = new SQL.Database(new Uint8Array(buf));
-          })
-        } catch(error) {
-          console.log("error")
+          });
+        } catch (error) {
+          console.log(error);
         }
       }
-      
+
       // fetch DB
       loadDB();
 
@@ -51,18 +61,18 @@
           // Prepare query statement
           var stmt = db.prepare(query);
           // execute query
-          while(stmt.step()) {
+          while (stmt.step()) {
             // get each row of result
             var row = stmt.getAsObject();
             // console.log(row['entry']);
-            preds.push(row['entry']);
+            preds.push(row["entry"]);
           }
           // if there is only one prediction
           if (preds.length == 1) {
             //push prediction to str
             str.push(preds[0]);
             //reset word
-            word = ''
+            word = "";
           }
           removeBtns();
           setupBtns(preds);
@@ -72,524 +82,604 @@
       // mapping from index to alphabet
       const map1 = new Map();
 
-      map1.set(00, '\u0D05');
-      map1.set(01, '\u0D06');
-      map1.set(02, '\u0D07');
-      map1.set(03, '\u0D08');
-      map1.set(04, '\u0D09');
-      map1.set(05, '\u0D0A');
-      map1.set(06, '\u0D0B');
-      map1.set(07, '\u0D0E');
-      map1.set(08, '\u0D0F');
-      map1.set(09, '\u0D10');
-      map1.set(10, '\u0D12');
-      map1.set(11, '\u0D13');
-      map1.set(12, '\u0D14');
-      map1.set(13, '\u0D02');
-      map1.set(14, '\u0D03');
-      map1.set(15, '\u0D2A');
-      map1.set(16, '\u0D2B');
-      map1.set(17, '\u0D2C');
-      map1.set(18, '\u0D2D');
-      map1.set(19, '\u0D2E');
-      map1.set(20, '\u0D2F');
-      map1.set(21, '\u0D30');
-      map1.set(22, '\u0D32');
-      map1.set(23, '\u0D35');
-      map1.set(24, '\u0D36');
-      map1.set(25, '\u0D37');
-      map1.set(26, '\u0D38');
-      map1.set(27, '\u0D39');
-      map1.set(28, '\u0D33');
-      map1.set(29, '\u0D31');
-      map1.set(30, '\u0D34');
-      map1.set(31, '\u0D7E');
-      map1.set(32, '\u0D7B');
-      map1.set(33, '\u0D7C');
-      map1.set(34, '\u0D7D');
-      map1.set(35, '\u0D7A');
-      map1.set(36, '\u0D41');
-      map1.set(37, '\u0D42');
-      map1.set(38, '\u0D3F');
-      map1.set(39, '\u0D40');
-      map1.set(40, '\u0D4D');
-      map1.set(41, '\u0D3D');
-      map1.set(42, '\u0D3A');
-      map1.set(43, '\u0D15');
-      map1.set(44, '\u0D16');
-      map1.set(45, '\u0D18');
-      map1.set(46, '\u0D17');
-      map1.set(47, '\u0D19');
-      map1.set(48, '\u0D1A');
-      map1.set(49, '\u0D1B');
-      map1.set(50, '\u0D1C');
-      map1.set(51, '\u0D1D');
-      map1.set(52, '\u0D1E');
-      map1.set(53, '\u0D1F');
-      map1.set(54, '\u0D20');
-      map1.set(55, '\u0D21');
-      map1.set(56, '\u0D22');
-      map1.set(57, '\u0D23');
-      map1.set(58, '\u0D24');
-      map1.set(59, '\u0D25');
-      map1.set(60, '\u0D26');
-      map1.set(61, '\u0D27');
-      map1.set(62, '\u0D28');
+      map1.set(00, "\u0D05");
+      map1.set(01, "\u0D06");
+      map1.set(02, "\u0D07");
+      map1.set(03, "\u0D08");
+      map1.set(04, "\u0D09");
+      map1.set(05, "\u0D0A");
+      map1.set(06, "\u0D0B");
+      map1.set(07, "\u0D0E");
+      map1.set(08, "\u0D0F");
+      map1.set(09, "\u0D10");
+      map1.set(10, "\u0D12");
+      map1.set(11, "\u0D13");
+      map1.set(12, "\u0D14");
+      map1.set(13, "\u0D02");
+      map1.set(14, "\u0D03");
+      map1.set(15, "\u0D2A");
+      map1.set(16, "\u0D2B");
+      map1.set(17, "\u0D2C");
+      map1.set(18, "\u0D2D");
+      map1.set(19, "\u0D2E");
+      map1.set(20, "\u0D2F");
+      map1.set(21, "\u0D30");
+      map1.set(22, "\u0D32");
+      map1.set(23, "\u0D35");
+      map1.set(24, "\u0D36");
+      map1.set(25, "\u0D37");
+      map1.set(26, "\u0D38");
+      map1.set(27, "\u0D39");
+      map1.set(28, "\u0D33");
+      map1.set(29, "\u0D31");
+      map1.set(30, "\u0D34");
+      map1.set(31, "\u0D7E");
+      map1.set(32, "\u0D7B");
+      map1.set(33, "\u0D7C");
+      map1.set(34, "\u0D7D");
+      map1.set(35, "\u0D7A");
+      map1.set(36, "\u0D41");
+      map1.set(37, "\u0D42");
+      map1.set(38, "\u0D3F");
+      map1.set(39, "\u0D40");
+      map1.set(40, "\u0D4D");
+      map1.set(41, "\u0D3D");
+      map1.set(42, "\u0D3A");
+      map1.set(43, "\u0D15");
+      map1.set(44, "\u0D16");
+      map1.set(45, "\u0D18");
+      map1.set(46, "\u0D17");
+      map1.set(47, "\u0D19");
+      map1.set(48, "\u0D1A");
+      map1.set(49, "\u0D1B");
+      map1.set(50, "\u0D1C");
+      map1.set(51, "\u0D1D");
+      map1.set(52, "\u0D1E");
+      map1.set(53, "\u0D1F");
+      map1.set(54, "\u0D20");
+      map1.set(55, "\u0D21");
+      map1.set(56, "\u0D22");
+      map1.set(57, "\u0D23");
+      map1.set(58, "\u0D24");
+      map1.set(59, "\u0D25");
+      map1.set(60, "\u0D26");
+      map1.set(61, "\u0D27");
+      map1.set(62, "\u0D28");
+
+      // mapping from index to alphabet
+      const map2 = new Map();
+
+      map2.set(0, "\u0D05");
+      map2.set(1, "\u0D06");
+      map2.set(2, "\u0D07");
+      map2.set(3, "\u0D08");
+      map2.set(4, "\u0D09");
+      map2.set(5, "\u0D0A");
+      map2.set(6, "\u0D0B");
+      map2.set(7, "\u0D0E");
+      map2.set(8, "\u0D0F");
+      map2.set(9, "\u0D10");
+
+      // mapping from index to alphabet
+      const map3 = new Map();
+
+      map3.set(0, "Pronounced as :`[a]");
+      map3.set(1, "Pronounced as :`[aa]");
+      map3.set(2, "Pronounced as :`[i]");
+      map3.set(3, "Pronounced as :`[ii]");
+      map3.set(4, "Pronounced as :`[u]");
+      map3.set(5, "Pronounced as :`[uu]");
+      map3.set(6, "Pronounced as :`[r]");
+      map3.set(7, "Pronounced as :`[e]");
+      map3.set(8, "Pronounced as :`[ee]");
+      map3.set(9, "Pronounced as :`[ai]");
+      map3.set(10, "Pronounced as :`[o]");
+      map3.set(11, "Pronounced as :`[oo]");
+      map3.set(12, "Pronounced as :`[au]");
+      map3.set(13, "Pronounced as :`[m]");
+      map3.set(14, "Pronounced as :`[m]");
+      map3.set(15, "Pronounced as :`[pa]");
+      map3.set(16, "Pronounced as :`[pha]");
+      map3.set(17, "Pronounced as :`[ba]");
+      map3.set(18, "Pronounced as :`[bha]");
+      map3.set(19, "Pronounced as :`[ma]");
+      map3.set(20, "Pronounced as :`[ya]");
+      map3.set(21, "Pronounced as :`[ra]");
+      map3.set(22, "Pronounced as :`[lla]");
+      map3.set(23, "Pronounced as :`[va]");
+      map3.set(24, "Pronounced as :`[sha]");
+      map3.set(25, "Pronounced as :`[ksha]");
+      map3.set(26, "Pronounced as :`[sa]");
+      map3.set(27, "Pronounced as :`[ha]");
+      map3.set(28, "Pronounced as :`[la]");
+      map3.set(29, "Pronounced as :`[rra]");
+      map3.set(30, "Pronounced as :`[zha]");
+      map3.set(31, "Pronounced as :`[ilh]");
+      map3.set(32, "Pronounced as :`[in]");
+      map3.set(33, "Pronounced as :`[irr]");
+      map3.set(34, "Pronounced as :`[il]");
+      map3.set(35, "Pronounced as :`[inh]");
+      map3.set(36, "Pronounced as :`[u]");
+      map3.set(37, "Pronounced as :`[uu]");
+      map3.set(38, "Pronounced as :`[i]");
+      map3.set(39, "Pronounced as :`[ii]");
+      map3.set(40, "Pronounced as :`[m]");
+      map3.set(41, "Pronounced as :`[iya]");
+      map3.set(42, "Pronounced as :`[rra]");
+      map3.set(43, "Pronounced as :`[ka]");
+      map3.set(44, "Pronounced as :`[kha]");
+      map3.set(45, "Pronounced as :`[ga]");
+      map3.set(46, "Pronounced as :`[gha]");
+      map3.set(47, "Pronounced as :`[nga]");
+      map3.set(48, "Pronounced as :`[cha]");
+      map3.set(49, "Pronounced as :`[chha]");
+      map3.set(50, "Pronounced as :`[ja]");
+      map3.set(51, "Pronounced as :`[jha]");
+      map3.set(52, "Pronounced as :`[nja]");
+      map3.set(53, "Pronounced as :`[ta]");
+      map3.set(54, "Pronounced as :`[ttha]");
+      map3.set(55, "Pronounced as :`[dda]");
+      map3.set(56, "Pronounced as :`[ddha]");
+      map3.set(57, "Pronounced as :`[nna]");
+      map3.set(58, "Pronounced as :`[tha]");
+      map3.set(59, "Pronounced as :`[thha]");
+      map3.set(60, "Pronounced as :`[da]");
+      map3.set(61, "Pronounced as :`[dha]");
+      map3.set(62, "Pronounced as :`[na]");
     </script>
-    <!-- <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
-      crossorigin="anonymous"
-    ></script> -->
   </head>
   <body>
-    <!-- <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
-      crossorigin="anonymous"
-    ></script> -->
-
     <!-- partial:index.partial.html -->
-    <div class="app-container">
-      <div class="app-header">
-        <div class="app-header-left">
-          <p translate="no" class="app-name">MSLRS</p>
-        </div>
-        <div class="app-header-right">
-          <button class="mode-switch" title="Switch Theme">
-            <svg
-              class="moon"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <defs></defs>
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-            </svg>
-          </button>
+    <div class="container">
+      <div class="sidebar">
+        <span class="logo">S</span>
+        <a translate="no" class="logo-expand" href="#">M S L R S</a>
+
+        <div class="side-wrapper">
+          <div translate="no" class="side-title">MENU</div>
+
+          <div class="side-menu">
+            <a translate="no" class="sidebar-link trending" href="#">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M9.135 20.773v-3.057c0-.78.637-1.414 1.423-1.414h2.875c.377 0 .74.15 1.006.414.267.265.417.625.417 1v3.057c-.002.325.126.637.356.867.23.23.544.36.87.36h1.962a3.46 3.46 0 002.443-1 3.41 3.41 0 001.013-2.422V9.867c0-.735-.328-1.431-.895-1.902l-6.671-5.29a3.097 3.097 0 00-3.949.072L3.467 7.965A2.474 2.474 0 002.5 9.867v8.702C2.5 20.464 4.047 22 5.956 22h1.916c.68 0 1.231-.544 1.236-1.218l.027-.009z"
+                />
+              </svg>
+
+              Home
+            </a>
+            <a translate="no" class="sidebar-link discover is-active" href="#">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19.761 12.001c0 .814.668 1.475 1.489 1.475.414 0 .75.333.75.743v2.677C22 19.159 20.142 21 17.858 21H6.143C3.859 21 2 19.159 2 16.896v-2.677c0-.41.336-.743.75-.743.822 0 1.49-.662 1.49-1.475 0-.793-.641-1.39-1.49-1.39a.752.752 0 01-.53-.217.74.74 0 01-.22-.525l.002-2.764C2.002 4.842 3.86 3 6.144 3h11.712c2.284 0 4.143 1.842 4.143 4.105L22 9.782a.741.741 0 01-.219.526.753.753 0 01-.531.218c-.821 0-1.489.662-1.489 1.475zm-5.509.647l1.179-1.137a.73.73 0 00-.409-1.25l-1.629-.236-.729-1.462a.737.737 0 00-.662-.41H12a.74.74 0 00-.663.409l-.729 1.463-1.626.235a.735.735 0 00-.6.498.724.724 0 00.187.753l1.179 1.137-.278 1.608a.727.727 0 00.295.719.742.742 0 00.777.054L12 14.27l1.455.757a.733.733 0 00.78-.053.723.723 0 00.296-.718l-.279-1.608z"
+                />
+              </svg>
+              Learn
+            </a>
+            <a
+              translate="no"
+              class="sidebar-link"
+              href="../index.html"
+              tyle="border: none"
+              ><svg
+                style="transform: rotate(180deg)"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M10.835 12.007l.002.354c.012 1.404.096 2.657.242 3.451 0 .015.16.802.261 1.064.16.38.447.701.809.905a2 2 0 00.91.219c.249-.012.66-.137.954-.242l.244-.094c1.617-.642 4.707-2.74 5.891-4.024l.087-.09.39-.42c.245-.322.375-.715.375-1.138 0-.379-.116-.758-.347-1.064-.07-.099-.18-.226-.28-.334l-.379-.397c-1.305-1.321-4.129-3.175-5.593-3.79 0-.013-.91-.393-1.343-.407h-.057c-.665 0-1.286.379-1.603.991-.087.168-.17.496-.233.784l-.114.544c-.13.874-.216 2.216-.216 3.688zm-6.332-1.525C3.673 10.482 3 11.162 3 12a1.51 1.51 0 001.503 1.518l3.7-.328c.65 0 1.179-.532 1.179-1.19 0-.658-.528-1.191-1.18-1.191l-3.699-.327z"
+                />
+              </svg>
+              Go Back
+            </a>
+          </div>
         </div>
       </div>
-      <div class="app-content">
-        <div class="app-sidebar">
-          <button
-            onclick="history.back()"
-            class="app-sidebar-link"
-            title="Go back Home"
-            style="border: none"
-          >
-            <svg
-              version="1.1"
-              id="Capa_1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 38.273 38.273"
-              style="enable-background: new 0 0 38.273 38.273"
-              xml:space="preserve"
-            >
-              <g>
-                <path
-                  style="fill: #010002"
-                  d="M20.621,10.484V5.84c0-0.808-0.458-1.548-1.181-1.909c-0.722-0.359-1.589-0.279-2.236,0.206
-           l-9.486,7.147c-0.677,0.292-1.117,0.67-1.401,1.058l-5.468,4.119C0.312,16.866-0.003,17.501,0,18.173
-           c0.002,0.673,0.322,1.305,0.862,1.706l16.355,12.133c0.646,0.48,1.51,0.554,2.23,0.191c0.72-0.362,1.174-1.1,1.174-1.905v-5.517
-           c0.013,0,0.025,0,0.038,0c3.842,0,10.687,1.089,13.366,8.386c0.311,0.846,1.116,1.397,2.001,1.397c0.079,0,0.157-0.004,0.236-0.013
-           c0.975-0.108,1.751-0.868,1.88-1.84c0.052-0.394,1.208-9.682-4.461-16.23C30.621,12.948,26.235,10.935,20.621,10.484z
-            M20.659,20.515c-1.443,0-2.379,0.132-2.482,0.146c-1.046,0.154-1.822,1.053-1.822,2.111v3.287l-10.66-7.907l3.555-2.678
-           c0.136-0.104,0.259-0.222,0.365-0.351c0.155-0.068,0.301-0.152,0.437-0.254l6.303-4.75v2.401c0,1.168,0.939,2.119,2.108,2.134
-           c5.345,0.063,9.374,1.61,11.975,4.6c1.442,1.658,2.314,3.602,2.835,5.469C28.923,21.038,23.424,20.515,20.659,20.515z"
-                />
-              </g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-            </svg>
-          </button>
-          <a
-          href="#"
-            class="app-sidebar-link"
-            title="App"
-            style="border: none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-home"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-          </a>
-          <a
-          href="/pages/learn.html"
-          class="app-sidebar-link"
-            title="Learn Signs"
-            style="border: none"
-          >
-            <svg
-              version="1.1"
-              id="Capa_1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 490 490"
-              style="enable-background: new 0 0 490 490"
-              xml:space="preserve"
-            >
-              <g>
-                <path
-                  d="M230.765,367.308c18.675,0,36.048-5.591,50.626-15.118l46.327,47.416l21.891-21.412l-45.686-46.76
-           c12.296-15.751,19.698-35.5,19.698-56.982c0-51.198-41.658-92.856-92.856-92.856c-51.198,0-92.856,41.658-92.856,92.856
-           C137.909,325.65,179.567,367.308,230.765,367.308z M230.765,212.219c34.316,0,62.233,27.917,62.233,62.233
-           c0,34.316-27.917,62.233-62.233,62.233c-34.316,0-62.233-27.917-62.233-62.233C168.532,240.136,196.449,212.219,230.765,212.219z"
-                />
-                <path
-                  d="M434.948,98.194h-20.868c-5.485-7.068-18.384-29.641,0.796-67.571h11.983V0H119.334C83.888,0,55.052,28.904,55.052,64.416
-           v342.806c0,28.993,8,51.093,23.767,65.687C95.641,488.46,115.483,490,122.272,490c1.286,0,2.101-0.045,2.34-0.075h310.336V98.194z
-            M119.334,30.623h262.1c-1.518,3.974-2.77,7.822-3.783,11.559h-169.02v30.623h165.511c0.532,9.829,2.604,18.348,5.356,25.39
-           H119.334c-18.556,0-33.659-15.147-33.659-33.778C85.675,45.785,100.777,30.623,119.334,30.623z M404.325,459.302l-280.902,0.045
-           c-0.127-0.045-13.517,0.598-23.805-8.927c-9.256-8.553-13.943-23.087-13.943-43.198V119.263c9.794,6.056,21.33,9.555,33.659,9.555
-           h284.991V459.302z"
-                />
-              </g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-              <g></g>
-            </svg>
-          </a>
+
+      <div class="wrapper">
+        <div class="header">
+          <div translate="no" class="search-bar">
+            <input
+              translate="no"
+              type="text"
+              placeholder="Search"
+              id="searchbar"
+              onkeyup="search()"
+            />
+          </div>
         </div>
-        <div class="projects-section">
-          <div class="projects-section-header">
-            <p translate="no">Camera</p>
-          </div>
-          <div class="camera-feed">
-            <img src="" id="wimg" alt="" height="480px" width="640px">
-          </div>
-          <!-- <video class="input_video" style="display: none"></video>
-           <canvas class="output_canvas" width="1280px" height="720px"></canvas> -->
-        </div>
-        <div class="messages-section">
-          <div class="projects-section-header">
-            <p translate="no">Messages</p>
-          </div>
-          <div class="messages">
-            <div class="message-box" style="flex-direction: column">
-              <div class="message-content">
-                <textarea id="w3" rows="6" cols="45"></textarea>
-                <button id="clearall">Clear</button>
-                <!-- <p class="message-line" id="w3">
-                  I got your first assignment. It was quite good. 🥳 We can
-                  continue with the next assignment.
-                </p> -->
+
+        <div class="main-container">
+          <div class="stream-area">
+            <div translate="no" class="video-stream">
+              <div class="camera-feed">
+                <img
+                  src="https://media4.giphy.com/media/xTkcEQACH24SMPxIQg/giphy.gif?"
+                  id="wimg"
+                  alt=""
+                  height="480px"
+                  width="640px"
+                  class="anim"
+                  style="min-height: 480px; min-width: 640px; border-radius: 20px;"
+                  
+                />
               </div>
-              <div class="complete-content" id="auto"></div>
+
+              <!-- <video
+          id="wimg"
+          class="video-js  input_video anim"
+          width="1280px"
+          height="720px"
+          controls
+          preload="none"
+          poster="https://images.unsplash.com/photo-1476801071117-fbc157ae3f01?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDh8fHxlbnwwfHx8&w=1000&q=80"
+          data-setup='{ "aspectRatio":"940:620", "playbackRates": [1, 1.5, 2] }'
+        >
+        </video> -->
               <div
-                style="
-                  flex-direction: row;
-                  display: flex;
-                  align-content: space-between;
-                  margin-right: 20px;
-                "
+                style="display: flex; justify-content: center; padding: 15px"
+                class="anim"
               >
-                <a href="" class="app-sidebar-link" style="margin: 15px">
-                  <svg
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 502.34 502.34"
-                    style="enable-background: new 0 0 502.34 502.34"
-                    xml:space="preserve"
-                  >
-                    <g transform="translate(1 1)">
-                      <path
-                        style="fill: #ffffff"
-                        d="M8.66,153.808v183.547h106.264l133.313,122.687c13.525,7.728,30.913-1.932,30.913-18.355V59.136
-		c0-16.423-17.389-26.083-30.913-18.355L114.925,153.808H8.66z"
-                      />
-                      <path
-                        style="fill: #cccccc"
-                        d="M114.925,337.355l133.313,122.687c13.525,7.728,30.913-1.932,30.913-18.355V59.136
-		c0-16.423-17.389-26.083-30.913-18.355L114.925,153.808V337.355z"
-                      />
-                      <path
-                        style="fill: #e2e3e5"
-                        d="M37.642,153.808v183.547h77.283l104.332,96.604c13.525,7.728,30.913,24.151,30.913,7.728V59.136
-		c0-16.423-17.389,0-30.913,7.728l-104.332,86.943H37.642z"
-                      />
-                      <g>
-                        <path
-                          style="fill: #b6b6b6"
-                          d="M258.864,472.6c-4.83,0-10.626-0.966-15.457-3.864c-0.966,0-0.966-0.966-1.932-0.966
-			L111.06,347.015H8.66l0,0c-2.898,0-4.83-0.966-6.762-2.898S-1,340.253-1,337.355V153.808c0-5.796,3.864-9.66,9.66-9.66h102.4
-			L242.442,33.053l0.966-0.966c9.66-5.796,20.287-5.796,29.947,0s15.457,15.457,15.457,27.049v383.517
-			c0,11.592-5.796,21.253-15.457,27.049C268.525,471.634,263.694,472.6,258.864,472.6z M254.034,452.313
-			c4.83,1.932,7.728,0.966,9.66,0c3.864-1.932,5.796-5.796,5.796-9.66V59.136c0-3.864-1.932-7.728-5.796-9.66
-			c-1.932-0.966-5.796-2.898-9.66,0l-133.313,112.06c-0.966,0.966-3.864,1.932-5.796,1.932H18.321v164.226h96.604l0,0
-			c2.898,0,4.83,0.966,6.762,2.898L254.034,452.313z"
-                        />
-                        <path
-                          style="fill: #b6b6b6"
-                          d="M114.925,211.77c-5.796,0-9.66-3.864-9.66-9.66v-48.302c0-5.796,3.864-9.66,9.66-9.66
-			s9.66,3.864,9.66,9.66v48.302C124.585,207.906,120.721,211.77,114.925,211.77z"
-                        />
-                        <path
-                          style="fill: #b6b6b6"
-                          d="M114.925,347.015c-5.796,0-9.66-3.864-9.66-9.66v-48.302c0-5.796,3.864-9.66,9.66-9.66
-			s9.66,3.864,9.66,9.66v48.302C124.585,343.151,120.721,347.015,114.925,347.015z"
-                        />
-                        <path
-                          style="fill: #b6b6b6"
-                          d="M370.925,424.298c-3.864,0-7.728-2.898-8.694-6.762c-1.932-4.83,0.966-10.626,5.796-12.559
-			c68.589-23.185,113.992-86.943,113.992-159.396S436.615,109.37,368.026,85.219c-4.83-1.932-7.728-6.762-5.796-12.558
-			c1.932-4.83,6.762-7.728,12.558-5.796C450.14,92.947,501.34,165.4,501.34,245.581s-51.2,152.634-127.517,177.751
-			C372.857,424.298,371.891,424.298,370.925,424.298z"
-                        />
-                        <path
-                          style="fill: #b6b6b6"
-                          d="M317.792,371.166c-3.864,0-7.728-2.898-9.66-6.762c-1.932-4.83,1.932-10.626,6.762-11.592
-			c47.336-13.525,80.181-57.962,80.181-106.264c0-49.268-32.845-92.74-80.181-106.264c-4.83-1.932-7.728-6.762-6.762-11.592
-			c1.932-4.83,6.762-7.728,11.592-6.762c55.064,16.423,94.672,67.623,94.672,125.585s-38.642,109.162-94.672,125.585
-			C319.725,371.166,318.758,371.166,317.792,371.166z"
-                        />
-                      </g>
-                    </g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                  </svg>
-                </a>
-                <br />
-                <a
-                  href="#google_translate_element"
-                  class="app-sidebar-link"
-                  style="margin: 15px"
+                <button
+                  translate="no"
+                  href="#"
+                  id="startstop"
+                  class="button button2"
                 >
-                  <svg
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 511.999 511.999"
-                    style="enable-background: new 0 0 511.999 511.999"
-                    xml:space="preserve"
-                  >
-                    <path
-                      style="fill: #b8c9d9"
-                      d="M461.909,133.563H320.778c-4.986,0-9.706,2.226-12.878,6.077c-3.172,3.84-4.452,8.904-3.506,13.79
-	l37.108,191.607H190.331c-5.009,0-9.739,2.237-12.922,6.111c-3.172,3.862-4.43,8.96-3.45,13.857l26.713,133.563
-	c1.625,8.114,8.515,13.111,15.772,13.423h245.466c27.614,0,50.086-22.472,50.086-50.086V183.649
-	C511.995,156.035,489.523,133.563,461.909,133.563z"
-                    />
-                    <path
-                      style="fill: #e6f3ff"
-                      d="M461.909,283.821h-50.086v-16.695c0-9.22-7.475-16.695-16.695-16.695
-	c-9.22,0-16.695,7.475-16.695,16.695v16.695h-50.086c-9.22,0-16.695,7.475-16.695,16.695s7.475,16.695,16.695,16.695h17.982
-	c3.195,19.862,12.261,34.916,25.553,50.151c-7.137,6.956-14.031,13.602-21.95,21.521c-6.52,6.519-6.52,17.09,0,23.611
-	c6.519,6.52,17.091,6.52,23.611,0c7.794-7.793,14.674-14.425,21.586-21.163c6.902,6.729,13.789,13.368,21.586,21.163
-	c6.519,6.52,17.09,6.521,23.611,0c6.52-6.52,6.52-17.091,0-23.611c-7.914-7.914-14.802-14.555-21.95-21.521
-	c13.293-15.234,22.357-30.288,25.553-50.151h17.982c9.22,0,16.695-7.475,16.695-16.695S471.129,283.821,461.909,283.821z
-	 M395.128,343.229c-7.323-8.736-12.152-16.753-14.652-26.017h29.303C407.279,326.476,402.449,334.494,395.128,343.229z"
-                    />
-                    <path
-                      style="fill: #2860cc"
-                      d="M377.286,355.656c-2.504-6.4-8.682-10.618-15.549-10.618H190.331c-5.009,0-9.739,2.237-12.922,6.111
-	c-3.172,3.862-4.43,8.96-3.45,13.857l26.713,133.563c1.625,8.114,8.515,13.111,15.772,13.423c0.479,0.011,0.957,0.011,1.436,0
-	c3.706-0.167,7.413-1.581,10.496-4.419l144.693-133.563C378.121,369.346,379.79,362.056,377.286,355.656z"
-                    />
-                    <path
-                      style="fill: #167ee6"
-                      d="M361.737,378.428H50.09c-27.619,0-50.086-22.467-50.086-50.086V50.086C0.004,22.468,22.472,0,50.09,0
-	h244.865c8,0,14.869,5.674,16.391,13.521l66.781,345.037c0.946,4.892-0.337,9.956-3.51,13.794
-	C371.443,376.2,366.726,378.428,361.737,378.428z"
-                    />
-                    <path
-                      style="fill: #e6f3ff"
-                      d="M166.958,255.996c-36.814,0-66.781-29.967-66.781-66.781s29.967-66.781,66.781-66.781
-	c9.032,0,17.804,1.793,26.021,5.282c8.478,3.62,12.424,13.434,8.804,21.913c-3.62,8.446-13.402,12.424-21.913,8.804
-	c-4.044-1.729-8.413-2.609-12.913-2.609c-18.424,0-33.391,14.967-33.391,33.391s14.967,33.391,33.391,33.391
-	c12.326,0,23.119-6.717,28.923-16.695h-12.228c-9.228,0-16.695-7.467-16.695-16.695c0-9.228,7.467-16.695,16.695-16.695h33.391c9.228,0,16.695,7.467,16.695,16.695C233.739,226.028,203.772,255.996,166.958,255.996z"
-                    />
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                    <g></g>
-                  </svg>
-                </a>
+                  Start
+                </button>
+              </div>
+            </div>
+
+            <div class="chat-stream anim">
+              <div class="chat">
+                <div translate="no" class="chat-header anim">Messages</div>
+                <div class="message-container">
+                  <div class="message anim" style="--delay: 0.1s">
+                    <div class="author-img__wrapper video-author video-p">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-check"
+                      ></svg>
+                      <img
+                        class="author-img"
+                        src="https://images.unsplash.com/photo-1560941001-d4b52ad00ecc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80"
+                      />
+                    </div>
+                    <div class="msg-wrapper">
+                      <div translate="no" class="msg__name video-p-name">
+                        Other Person
+                      </div>
+                      <!-- <div translate="yes" class="msg__content video-p-sub">
+                        This is dummy Text
+                      </div> -->
+                      <textarea
+                        translate="no"
+                        id="w3"
+                        style="resize: none"
+                        class="msg__content video-p-sub"
+                        rows="5"
+                        cols="50"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="complete-content" id="auto"></div>
+                </div>
+                <div class="wrap">
+                  <div>
+                    <button
+                      translate="no"
+                      href="#"
+                      id="clearall"
+                      class="button button2"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div style="flex-direction: row">
+                    <div>
+                      <!-- <a translate="no" href="#" class="button button2"
+                        >Translate</a
+                      > -->
+                    </div>
+                    <div id="google_translate_element"></div>
+                  </div>
+                </div>
+                <div class="message-container">
+                  <div class="message anim" style="--delay: 0.1s">
+                    <div class="author-img__wrapper video-author video-p">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-check"
+                      ></svg>
+                      <img
+                        class="author-img"
+                        src="https://images.unsplash.com/photo-1560941001-d4b52ad00ecc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80"
+                      />
+                    </div>
+                    <div class="msg-wrapper">
+                      <div translate="no" class="msg__name video-p-name">
+                        Other Person
+                      </div>
+                      <div translate="yes" id="dupText" class="msg__content video-p-sub">
+                        Translated text...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div
                   id="google_translate_element"
                   style="flex-direction: row; margin: 25px"
                 ></div>
+
+                <script type="text/javascript">
+                  function googleTranslateElementInit() {
+                    new google.translate.TranslateElement(
+                      { pageLanguage: "ml" },
+                      "google_translate_element"
+                    );
+                  }
+                </script>
+                <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
               </div>
             </div>
-
-            <script type="text/javascript">
-              function googleTranslateElementInit() {
-                new google.translate.TranslateElement(
-                  { pageLanguage: "en" },
-                  "google_translate_element"
-                );
-              }
-            </script>
-            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
           </div>
+
+          <div translate="no" class="main-header anim" style="--delay: 0s">
+            Signs
+          </div>
+
+          <div translate="no" id="inde" class="small-header anim" style="--delay: 0.3s">
+            Independent Vowels:
+          </div>
+          <script type="text/javascript">
+            vow = document.getElementById("inde");
+            index = Array.from(vow.parentElement.children).indexOf(vow);
+            ctr = 0;
+            for (let index = 0; index < 15; index++) {
+              if (index == 0) {
+                videos = document.createElement("div");
+                videos.className = "videos";
+              }
+              if (index % 4 == 0) {
+                videos.insertAdjacentElement('afterend', document.createElement("br"));
+                ctr = 0;
+              }
+              videos_anim = document.createElement("div");
+              videos_anim.className = "video anim";
+              videos_anim.setAttribute("style", `--delay: 0.${ctr + 4}s`);
+              ctr += 1;
+
+              videos_wrapper = document.createElement("div");
+              videos_wrapper.className = "video-wrapper";
+
+              video_by = document.createElement("div");
+              video_by.className = "video-by";
+
+              video_name = document.createElement("div");
+              video_name.className = "video-name";
+              video_name.setAttribute("translate", "no");
+              video_name.appendChild(document.createTextNode(map3.get(index)));
+
+              main = document.createElement("main");
+              main.setAttribute("style", "font-size: 30px");
+              main.setAttribute("translate", "no");
+              if (index < 10) {
+                main.appendChild(document.createTextNode(map2.get(index)));
+              } else {
+                main.appendChild(document.createTextNode(map1.get(index)));
+              }
+              
+              img = document.createElement("img");
+              if (index == 3 || index == 5 || index == 8 || index == 9 || index == 11 || index == 12 || index == 13 || index == 14) {
+                img.src = `assets/signs/${index}.gif`;
+              } else {
+                img.src = `assets/signs/${index}.png`;
+              }
+
+              videos_wrapper.appendChild(img);
+              video_by.appendChild(main);
+
+              videos_anim.appendChild(videos_wrapper);
+              videos_anim.appendChild(video_by);
+              videos_anim.appendChild(video_name);
+
+              videos.appendChild(videos_anim);
+            }
+            vow.insertAdjacentElement('afterend', videos);
+          </script>
+          <div translate="no" id="depe" class="small-header anim" style="--delay: 0.3s">
+            Dependent Vowels:
+          </div>
+          <script type="text/javascript">
+            vow = document.getElementById("depe");
+            index = Array.from(vow.parentElement.children).indexOf(vow);
+            ctr = 0;
+            for (let index = 36; index < 43; index++) {
+              if (index == 36) {
+                videos = document.createElement("div");
+                videos.className = "videos";
+              }
+              if (index % 4 == 0) {
+                videos.insertAdjacentElement('afterend', document.createElement("br"));
+                ctr = 0;
+              }
+              videos_anim = document.createElement("div");
+              videos_anim.className = "video anim";
+              videos_anim.setAttribute("style", `--delay: 0.${ctr + 4}s`);
+              ctr += 1;
+
+              videos_wrapper = document.createElement("div");
+              videos_wrapper.className = "video-wrapper";
+
+              video_by = document.createElement("div");
+              video_by.className = "video-by";
+
+              video_name = document.createElement("div");
+              video_name.className = "video-name";
+              video_name.setAttribute("translate", "no");
+              video_name.appendChild(document.createTextNode(map3.get(index)));
+
+              main = document.createElement("main");
+              main.setAttribute("style", "font-size: 30px");
+              main.setAttribute("translate", "no");
+              if (index < 10) {
+                main.appendChild(document.createTextNode(map2.get(index)));
+              } else {
+                main.appendChild(document.createTextNode(map1.get(index)));
+              }
+              
+              img = document.createElement("img");
+              if (index == 38 || index==39 || index == 42) {
+                img.src = `assets/signs/${index}.gif`;
+              } else {
+                img.src = `assets/signs/${index}.png`;
+              }
+
+              videos_wrapper.appendChild(img);
+              video_by.appendChild(main);
+
+              videos_anim.appendChild(videos_wrapper);
+              videos_anim.appendChild(video_by);
+              videos_anim.appendChild(video_name);
+
+              videos.appendChild(videos_anim);
+            }
+            vow.insertAdjacentElement('afterend', videos);
+          </script>
+          
+          <div translate="no" id="cons" class="small-header anim" style="--delay: 0.3s">
+            Consonants:
+          </div>
+          <script type="text/javascript">
+            vow = document.getElementById("cons");
+            index = Array.from(vow.parentElement.children).indexOf(vow);
+            ctr = 0;
+            for (let index = 15; index < 63; index++) {
+              if (index > 35 && index < 43) {
+                continue;
+              }
+              if (index == 15) {
+                videos = document.createElement("div");
+                videos.className = "videos";
+              }
+              if (index % 4 == 0) {
+                videos.insertAdjacentElement('afterend', document.createElement("br"));
+                ctr = 0;
+              }
+              videos_anim = document.createElement("div");
+              videos_anim.className = "video anim";
+              videos_anim.setAttribute("style", `--delay: 0.${ctr + 4}s`);
+              ctr += 1;
+
+              videos_wrapper = document.createElement("div");
+              videos_wrapper.className = "video-wrapper";
+
+              video_by = document.createElement("div");
+              video_by.className = "video-by";
+
+              video_name = document.createElement("div");
+              video_name.className = "video-name";
+              video_name.setAttribute("translate", "no");
+              video_name.appendChild(document.createTextNode(map3.get(index)));
+
+              main = document.createElement("main");
+              main.setAttribute("style", "font-size: 30px");
+              main.setAttribute("translate", "no");
+              if (index < 10) {
+                main.appendChild(document.createTextNode(map2.get(index)));
+              } else {
+                main.appendChild(document.createTextNode(map1.get(index)));
+              }
+              
+              img = document.createElement("img");
+              if (index == 19 || index == 32 || index == 34 || index == 35 || index == 38 || index == 42 || index == 51) {
+                img.src = `assets/signs/${index}.gif`;
+              } else {
+                img.src = `assets/signs/${index}.png`;
+              }
+
+              videos_wrapper.appendChild(img);
+              video_by.appendChild(main);
+
+              videos_anim.appendChild(videos_wrapper);
+              videos_anim.appendChild(video_by);
+              videos_anim.appendChild(video_name);
+
+              videos.appendChild(videos_anim);
+            }
+            vow.insertAdjacentElement('afterend', videos);
+          </script>
+          
         </div>
       </div>
     </div>
     <!-- partial -->
-
-    <script src="./app.js"></script>
     <script type="text/javascript">
+      var cMap = new Map();
       // Expose this function to Python
       eel.expose(print_label);
       // obtain predicted gesture index and probability as json
       function print_label(x) {
-        x = JSON.parse(x)
-        // null if no hands detected
-        if (x.label != null) {
-          // obtain unicode malayalam alphabet
-          s = map1.get(parseInt(x.label))
-          // undefined if label is None
-          if(s != undefined) {
-            // check if current label is same as previous
-            if(pre != s) {
-              // if not, set previous to current label
-              pre = s
-              // check if s is a whitespace
-              if (s == " ") {
-                // if so push word into str and reset word
-                str.push(word)
-                word = ''
-              } else {
-                // check if s is first char of word
-                if (word.length > 0) {
-                  // check if a/aa/e/ee/u/uu etc come in the middle of a word
-                  if (s == '\u0D06') {
-                    s = '\u0D3E'
-                  } else if (s == '\u0D05') {
-                    s = ''
-                  } else if (s == '\u0D07') {
-                    s = '\u0D3F'
-                  } else if (s == '\u0D08') {
-                    s = '\u0D40'
-                  } else if (s == '\u0D09') {
-                    s = '\u0D41'
-                  } else if (s == '\u0D0A') {
-                    s = '\u0D42'
-                  }
-                }
-                word += s
+        x = JSON.parse(x);
+        // obtain unicode malayalam alphabet
+        s = map1.get(parseInt(x.label));
+        if (s == " ") {
+          // if so push word into str and reset word
+          str.push(word);
+          word = "";
+        } else {
+          var cnt = cMap.get(s);
+          if (cnt == undefined) {
+            cMap.set(s, 0);
+          } else if (cnt == 4) {
+            cMap = new Map();
+            // check if s is first char of word
+            if (word.length > 0 && pre!=s) {
+            // check if a/aa/e/ee/u/uu etc come in the middle of a word
+              if (s == "\u0D06") {
+                s = "\u0D3E";
+              } else if (s == "\u0D05") {
+                s = "";
+              } else if (s == "\u0D07") {
+                s = "\u0D3F";
+              } else if (s == "\u0D08") {
+                s = "\u0D40";
+              } else if (s == "\u0D09") {
+                s = "\u0D41";
+              } else if (s == "\u0D0A") {
+                s = "\u0D42";
               }
-              getPredictions(word)
-              // convert word to manglish
-              // console.log(ml2en(word))
-              // send manglish to Google transliterate API to get word predictions
-              // doRequest(ml2en(word)).then(data => {
-              //   // obtain predictions array
-              //   preds = data[1][0][1]
-              //   if (preds.length == 1) {
-              //     str.push(preds[0])
-              //     word = ''
-              //   }
-              //   // remove all prediction buttons
-              //   removeBtns();
-              //   setupBtns(preds);
-              // });
-              // console.log(preds);
-              // set textarea text to str + word
-              document.getElementById('w3').value = str.join(" ") + word;
-              // set cursor to end of text
-              end = document.getElementById('w3').value.length;
-              document.getElementById('w3').setSelectionRange(end, end);
-              document.getElementById('w3').focus();
             }
+            if (pre != s) {
+              word += s;
+              pre = s;
+              getPredictions(word);
+              // set textarea text to str + word
+              document.getElementById("w3").value = str.join(" ") + word;
+              getDup();
+              // set cursor to end of text
+              end = document.getElementById("w3").value.length;
+              document.getElementById("w3").setSelectionRange(end, end);
+              document.getElementById("w3").focus();
+            }
+          } else {
+            cMap.set(s, cnt + 1);
           }
         }
       }
@@ -598,7 +688,7 @@
       function removeBtns() {
         var chils = document.getElementById("auto");
         while (chils.firstChild) {
-          chils.removeChild(chils.lastChild)
+          chils.removeChild(chils.lastChild);
         }
       }
 
@@ -607,115 +697,114 @@
         var chils = document.getElementById("auto");
         for (var i = 0; i < names.length; i++) {
           // create buttons for each prediction in array
-          var btn=document.createElement("button");
-          btn.className = "autoButton"
+          var btn = document.createElement("button");
+          btn.setAttribute("translate","no");
+          btn.className = "autoButton";
           btn.style.margin = "10px";
-          btn.innerHTML=names[i];
+          btn.innerHTML = names[i];
           chils.appendChild(btn);
         }
         // get all auto complete buttons
-        var buttons = document.querySelectorAll('.autoButton');
+        var buttons = document.querySelectorAll(".autoButton");
         // add click listeners for each button
-        buttons.forEach(function(el) {
-          el.addEventListener('click', onClick, false);
-        })
+        buttons.forEach(function (el) {
+          el.addEventListener("click", onClick, false);
+        });
 
         function onClick(e) {
           var button = e.currentTarget;
           // push buttons text into str
-          str.push(button.innerText);
+          str.push(button.innerHTML);
           // reset word
-          word = ''
+          word = "";
           // remove all prediction buttons
           removeBtns();
         }
       }
 
       // clear all button
-      document.getElementById('clearall').onclick = function() {
+      document.getElementById("clearall").onclick = function () {
         // clear textarea
-        document.getElementById('w3').value = ''
+        document.getElementById("w3").value = "";
         // reset variables
-        str = []
-        pre = ''
-        word = ''
+        str = [];
+        pre = "";
+        word = "";
+      };
+
+      function getDup() {
+        document.getElementById("dupText").innerHTML = document.getElementById("w3").value;
       }
 
-      // Send request to Google Transliteration API to obtain word predictions
-      // async function doRequest(text) {
-      //   let url = `https://inputtools.google.com/request?text=${text}&itc=ml-t-i0-und&num=13&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`;
-      //   let res = await fetch(url);
+      // Start/Stop button
+      document.getElementById("startstop").onclick = function () {
+        if (document.getElementById("startstop").innerHTML.trim() == "Stop") {
+          document.getElementById("startstop").innerHTML = "Stopping...";
+          eel.stop();
+        } else if (document.getElementById("startstop").innerHTML.trim() == "Start") {
+          console.log("running");
+          document.getElementById("startstop").innerHTML = "Starting...";
+          eel.waitForStart();
+        }
+      };
 
-      //   if (res.ok) {
-
-      //       let json = await res.json();
-
-      //       return json;
-      //   } else {
-      //       return `HTTP error: ${res.status}`;
-      //   }
-      // }
+      // searchBar
+      // document.getElementById("searchbar").onkeyup = function () {
+      function search(){
+        console.log("downa");
+        var txt = document.getElementById("searchbar").value;
+        console.log(txt);
+        var collection = document.getElementsByClassName("video anim");
+        if (txt == "") {
+          for (let index = 0; index < collection.length; index++) {
+            collection[index].style.display = "block";
+          }
+        } else {
+          for (let index = 0; index < collection.length; index++) {
+            var child = collection[index].children[2];
+            var iTxt = child.innerHTML;
+            iTxt = iTxt.substring(iTxt.indexOf("[") + 1, iTxt.indexOf("]"));
+            console.log(iTxt);
+            if (iTxt.includes(txt)) {
+              collection[index].style.display = "block";
+            } else {
+              collection[index].style.display = "none";
+            }
+          }
+        }
+      };
 
       // Expose this function to Python
       eel.expose(print_image);
       // obtain base64 image string as json
       function print_image(x) {
-        var s = JSON.parse(x)
-        s = "data:image/jpg;base64," + s.image
-        document.getElementById('wimg').src = s;
+        var s = JSON.parse(x);
+        s = "data:image/jpg;base64," + s.image;
+        document.getElementById("wimg").src = s;
+      }
+
+      // Expose this function to Python
+      eel.expose(startStop);
+      // obtain base64 image string as json
+      function startStop() {
+        if (document.getElementById("startstop").innerHTML == "Stopping...") {
+          document.getElementById("w3").value = "";
+          // reset variables
+          str = [];
+          pre = "";
+          word = "";
+          document.getElementById("wimg").src =
+            "https://media4.giphy.com/media/xTkcEQACH24SMPxIQg/giphy.gif";
+          document.getElementById("startstop").innerHTML = "Start";
+        } else if (
+          document.getElementById("startstop").innerHTML == "Starting..."
+        ) {
+          document.getElementById("startstop").innerHTML = "Stop";
+        }
       }
     </script>
-    <!-- <script type="module">
-      const videoElement = document.getElementsByClassName("input_video")[0];
-      const canvasElement = document.getElementsByClassName("output_canvas")[0];
-      const canvasCtx = canvasElement.getContext("2d");
-
-      function onResults(results) {
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.drawImage(
-          results.image,
-          0,
-          0,
-          canvasElement.width,
-          canvasElement.height
-        );
-        if (results.multiHandLandmarks) {
-          for (const landmarks of results.multiHandLandmarks) {
-            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
-              color: "#00FF00",
-              lineWidth: 5,
-            });
-            drawLandmarks(canvasCtx, landmarks, {
-              color: "#FF0000",
-              lineWidth: 2,
-            });
-          }
-        }
-        canvasCtx.restore();
-      }
-
-      const hands = new Hands({
-        locateFile: (file) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-        },
-      });
-      hands.setOptions({
-        maxNumHands: 2,
-        modelComplexity: 1,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-      hands.onResults(onResults);
-
-      const camera = new Camera(videoElement, {
-        onFrame: async () => {
-          await hands.send({ image: videoElement });
-        },
-        width: 1280,
-        height: 720,
-      });
-      camera.start();
-    </script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://vjs.zencdn.net/5-unsafe/video.js"></script>
+    <script src="./app.js"></script>
   </body>
 </html>
