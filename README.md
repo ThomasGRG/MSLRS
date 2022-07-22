@@ -26,5 +26,5 @@ holistic.py dataset \[input_dir] \[output_dir]
 ## Training
 train.py \[input_dir] \[model_output_dir]
 
-## Dataset processing
+## Live preview
 live2.py \[model_dir]
