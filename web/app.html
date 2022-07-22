@@ -670,13 +670,7 @@
               word += s;
               pre = s;
               getPredictions(word);
-              // set textarea text to str + word
-              document.getElementById("w3").value = str.join(" ") + word;
-              getDup();
-              // set cursor to end of text
-              end = document.getElementById("w3").value.length;
-              document.getElementById("w3").setSelectionRange(end, end);
-              document.getElementById("w3").focus();
+              updateText();
             }
           } else {
             cMap.set(s, cnt + 1);
@@ -684,12 +678,22 @@
         }
       }
 
+      function updateText() {
+        // set textarea text to str + word
+        document.getElementById("w3").value = str.join(" ") + word;
+        getDup();
+        // set cursor to end of text
+        end = document.getElementById("w3").value.length;
+        document.getElementById("w3").setSelectionRange(end, end);
+        document.getElementById("w3").focus();
+      }
+
       // remove all autocomplete buttons
       function removeBtns() {
-        var chils = document.getElementById("auto");
-        while (chils.firstChild) {
-          chils.removeChild(chils.lastChild);
-        }
+        var chils = document.querySelectorAll(".autoButton");
+        chils.forEach( btn => {
+          btn.remove();
+        });
       }
 
       // add autocomplete buttons and add click listener
@@ -716,6 +720,8 @@
           // push buttons text into str
           str.push(button.innerHTML);
           // reset word
+          word = " ";
+          updateText();
           word = "";
           // remove all prediction buttons
           removeBtns();
@@ -730,6 +736,8 @@
         str = [];
         pre = "";
         word = "";
+        removeBtns();
+        document.getElementById("dupText").innerHTML = "Translated text...";
       };
 
       function getDup() {
