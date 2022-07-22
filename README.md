@@ -19,3 +19,12 @@ Malayalam Sign Language Recognition System using Mediapipe and Tensorflow
 # ![working](./.github/readme-assets/working.gif)
 
 # Usage
+
+## Dataset processing
+holistic.py dataset \[input_dir] \[output_dir]
+
+## Training
+train.py \[input_dir] \[model_output_dir]
+
+## Dataset processing
+live2.py \[model_dir]
