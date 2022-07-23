@@ -13,10 +13,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://vjs.zencdn.net/5-unsafe/video-js.css"
-    />
     <link rel="stylesheet" href="./app.css" />
 
     <script type="text/javascript">
@@ -146,7 +142,7 @@
       map1.set(61, "\u0D27");
       map1.set(62, "\u0D28");
 
-      // mapping from index to alphabet
+      // mapping from index to alphabet (learn module)
       const map2 = new Map();
 
       map2.set(0, "\u0D05");
@@ -160,7 +156,7 @@
       map2.set(8, "\u0D0F");
       map2.set(9, "\u0D10");
 
-      // mapping from index to alphabet
+      // mapping from index to alphabet (learn module)
       const map3 = new Map();
 
       map3.set(0, "Pronounced as :`[a]");
@@ -309,17 +305,6 @@
                 />
               </div>
 
-              <!-- <video
-          id="wimg"
-          class="video-js  input_video anim"
-          width="1280px"
-          height="720px"
-          controls
-          preload="none"
-          poster="https://images.unsplash.com/photo-1476801071117-fbc157ae3f01?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDh8fHxlbnwwfHx8&w=1000&q=80"
-          data-setup='{ "aspectRatio":"940:620", "playbackRates": [1, 1.5, 2] }'
-        >
-        </video> -->
               <div
                 style="display: flex; justify-content: center; padding: 15px"
                 class="anim"
@@ -359,43 +344,17 @@
                       <div translate="no" class="msg__name video-p-name">
                         Other Person
                       </div>
-                      <!-- <div translate="yes" class="msg__content video-p-sub">
-                        This is dummy Text
-                      </div> -->
                       <textarea
                         translate="no"
                         id="w3"
-                        style="resize: none"
+                        style="resize: none;height: 138px;overflow-y:hidden;"
                         class="msg__content video-p-sub"
-                        rows="5"
-                        cols="50"
+                        rows="6"
+                        cols="22"
                       ></textarea>
                     </div>
                   </div>
-                  <div class="complete-content" id="auto"></div>
-                </div>
-                <div class="wrap">
-                  <div>
-                    <button
-                      translate="no"
-                      href="#"
-                      id="clearall"
-                      class="button button2"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <div style="flex-direction: row">
-                    <div>
-                      <!-- <a translate="no" href="#" class="button button2"
-                        >Translate</a
-                      > -->
-                    </div>
-                    <div id="google_translate_element"></div>
-                  </div>
-                </div>
-                <div class="message-container">
-                  <div class="message anim" style="--delay: 0.1s">
+                  <div class="message anim" style="--delay: 0.2s">
                     <div class="author-img__wrapper video-author video-p">
                       <svg
                         viewBox="0 0 24 24"
@@ -419,6 +378,22 @@
                         Translated text...
                       </div>
                     </div>
+                  </div>
+                  <div class="complete-content" id="auto"></div>
+                </div>
+                <div class="wrap">
+                  <div>
+                    <button
+                      translate="no"
+                      href="#"
+                      id="clearall"
+                      class="button button2"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div style="flex-direction: row">
+                    <div id="google_translate_element"></div>
                   </div>
                 </div>
 
@@ -679,13 +654,16 @@
       }
 
       function updateText() {
+        var tx = document.getElementById("w3");
         // set textarea text to str + word
-        document.getElementById("w3").value = str.join(" ") + word;
+        tx.value = str.join(" ") + word;
         getDup();
         // set cursor to end of text
-        end = document.getElementById("w3").value.length;
-        document.getElementById("w3").setSelectionRange(end, end);
-        document.getElementById("w3").focus();
+        end = tx.value.length;
+        tx.setSelectionRange(end, end);
+        tx.focus();
+        tx.style.height = "auto";
+        tx.style.height = (tx.scrollHeight) + "px";
       }
 
       // remove all autocomplete buttons
@@ -812,7 +790,6 @@
       }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://vjs.zencdn.net/5-unsafe/video.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
