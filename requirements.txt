@@ -1,0 +1,7 @@
+eel==0.14.0
+keras==2.8.0
+matplotlib==3.5.1
+mediapipe==0.8.9.1
+numpy==1.22.3
+protobuf==3.20.1
+tensorflow==2.8.0
